@@ -25,7 +25,7 @@ const Contact = () => {
               <span className="text-blue-400">Touch</span>
             </h1>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium">
-              Ready to prioritize your neurological health? Our team at Ardely Bazar is standing by to assist you.
+              Ready to prioritize your neurological health? Our team at Brij Enclave Colony is standing by to assist you.
             </p>
           </motion.div>
         </div>
@@ -47,7 +47,7 @@ const Contact = () => {
                 
                 <div className="grid grid-cols-1 gap-6">
                   {[
-                    { icon: <MapPin />, title: "Clinic Address", desc: "Ardely Bazar, Near Canara Bank, Varanasi, 221002", color: "blue" },
+                    { icon: <MapPin />, title: "Clinic Address", desc: "Brij Enclave Colony, Sundarpur, Nagwa, Varanasi, Uttar Pradesh 221005", color: "blue" },
                     { icon: <Phone />, title: "Support Lines", desc: "+91 99999999, +91 12345 67890", color: "emerald" },
                     { icon: <Mail />, title: "Email Support", desc: "contact@ashaneurology.com", color: "blue" },
                     { icon: <Clock />, title: "Clinic Timing", desc: "Mon - Sat: 10:00 AM - 08:00 PM", color: "emerald" },
@@ -105,7 +105,7 @@ const Contact = () => {
                 className="w-full h-[500px] bg-white rounded-[4rem] overflow-hidden relative shadow-3xl border-8 border-white p-2"
               >
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14429.560124317772!2d82.97780004755106!3d25.327800047551062!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398e2db2f0b7843f%3A0x7b507722!2sArdely%20Bazar%2C%20Varanasi%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1714200000000!5m2!1sen!2sin" 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3606.32187652391!2d82.98394477543152!3d25.297920477646548!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x398e31f0c2e646f9%3A0x633519c2c62c2f4e!2sBrij%20Enclave%20Colony%2C%20Sundarpur%2C%20Varanasi%2C%20Uttar%20Pradesh%20221005!5e0!3m2!1sen!2sin!4v1714310000000!5m2!1sen!2sin" 
                   width="100%" 
                   height="100%" 
                   style={{ border: 0, borderRadius: '3.5rem' }} 
