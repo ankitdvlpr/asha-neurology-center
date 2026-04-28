@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --primary: #0f4c81; /* Classic Neurology Blue */
+  --primary-light: #e6eff7;
+  --secondary: #10b981; /* Calm Emerald Green */
+  --secondary-light: #ecfdf5;
+  --slate-900: #0f172a;
+  --slate-600: #475569;
+  --slate-400: #94a3b8;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply text-slate-900 bg-white;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-6 py-3 bg-[#0f4c81] text-white rounded-xl font-bold transition-all hover:bg-[#0d3f6b] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 inline-flex items-center justify-center gap-2;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-white text-[#0f4c81] border-2 border-[#0f4c81] rounded-xl font-bold transition-all hover:bg-[#e6eff7] inline-flex items-center justify-center gap-2;
+  }
+
+  .btn-green {
+    @apply px-6 py-3 bg-[#10b981] text-white rounded-xl font-bold transition-all hover:bg-[#059669] hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 inline-flex items-center justify-center gap-2;
+  }
+
+  .section-padding {
+    @apply py-20 md:py-32 px-4 md:px-8;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .card-premium {
+    @apply bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-100 border border-slate-50 hover:shadow-2xl hover:shadow-slate-200 transition-all duration-500;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#0f4c81] to-[#10b981];
+  }
+
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+  }
+}
+
+/* Custom Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
