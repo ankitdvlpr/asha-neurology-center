@@ -74,7 +74,7 @@ export default function Home() {
                 <Link href="/appointment" className="btn-primary px-8 md:px-10 py-4 md:py-5 text-xs uppercase tracking-widest">
                   <Calendar size={18} /> Book Appointment
                 </Link>
-                <a href="tel:+919876543210" className="btn-secondary px-8 md:px-10 py-4 md:py-5 text-xs uppercase tracking-widest">
+                <a href="tel:+9199999999" className="btn-secondary px-8 md:px-10 py-4 md:py-5 text-xs uppercase tracking-widest">
                   <Phone size={18} /> Call Specialist
                 </a>
               </motion.div>
@@ -323,8 +323,8 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6">
               <Link href="/appointment" className="bg-white text-[#0f4c81] px-8 md:px-12 py-4 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-lg md:text-xl hover:scale-105 transition-all shadow-2xl">Book My Slot</Link>
-              <a href="tel:+919876543210" className="bg-emerald-500 text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-lg md:text-xl hover:scale-105 transition-all shadow-2xl flex items-center justify-center gap-3">
-                <Phone size={20} className="md:w-6 md:h-6" /> +91 98765 43210
+              <a href="tel:+9199999999" className="bg-emerald-500 text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl md:rounded-[2rem] font-black text-lg md:text-xl hover:scale-105 transition-all shadow-2xl flex items-center justify-center gap-3">
+                <Phone size={20} className="md:w-6 md:h-6" /> +91 99999999
               </a>
             </div>
           </motion.div>

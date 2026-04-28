@@ -206,8 +206,8 @@ const Services = () => {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6">
             <Link href="/appointment" className="btn-primary px-12">Book Consultation Now</Link>
-            <a href="tel:+919876543210" className="flex items-center justify-center px-12 py-5 rounded-2xl font-black bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 transition-all shadow-sm">
-              <Phone size={20} className="mr-3 text-blue-600" /> +91 98765 43210
+            <a href="tel:+9199999999" className="flex items-center justify-center px-12 py-5 rounded-2xl font-black bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 transition-all shadow-sm">
+              <Phone size={20} className="mr-3 text-blue-600" /> +91 99999999
             </a>
           </div>
         </motion.div>

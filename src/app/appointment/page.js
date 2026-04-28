@@ -156,7 +156,7 @@ const Appointment = () => {
                     </button>
                     
                     <p className="text-center text-slate-400 font-bold text-sm mt-6">
-                      Urgent Case? Call us directly: <a href="tel:+919876543210" className="text-blue-600 hover:underline">+91 98765 43210</a>
+                      Urgent Case? Call us directly: <a href="tel:+9199999999" className="text-blue-600 hover:underline">+91 99999999</a>
                     </p>
                   </motion.form>
                 )}

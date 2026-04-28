@@ -48,7 +48,7 @@ const Contact = () => {
                 <div className="grid grid-cols-1 gap-6">
                   {[
                     { icon: <MapPin />, title: "Clinic Address", desc: "Ardely Bazar, Near Canara Bank, Varanasi, 221002", color: "blue" },
-                    { icon: <Phone />, title: "Support Lines", desc: "+91 98765 43210, +91 12345 67890", color: "emerald" },
+                    { icon: <Phone />, title: "Support Lines", desc: "+91 99999999, +91 12345 67890", color: "emerald" },
                     { icon: <Mail />, title: "Email Support", desc: "contact@ashaneurology.com", color: "blue" },
                     { icon: <Clock />, title: "Clinic Timing", desc: "Mon - Sat: 10:00 AM - 08:00 PM", color: "emerald" },
                   ].map((item, i) => (
@@ -86,11 +86,11 @@ const Contact = () => {
                   Trusted neurological excellence with state-of-the-art diagnostic facilities in Varanasi.
                 </p>
                 <a 
-                  href="tel:+919876543210" 
+                  href="tel:+9199999999" 
                   className="flex items-center justify-center gap-3 bg-[#0f4c81] hover:bg-[#0d3f6b] text-white py-5 rounded-2xl font-black transition-all shadow-xl shadow-blue-900/20 text-lg"
                 >
                   <Phone size={22} />
-                  Call: +91 98765 43210
+                  Call: +91 99999999
                 </a>
               </motion.div>
             </div>
@@ -179,7 +179,7 @@ const Contact = () => {
                 Connect with our coordination team for quick answers about clinic timings or reports.
               </p>
               <a 
-                href="https://wa.me/919876543210" 
+                href="https://wa.me/9199999999" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-4 bg-white text-[#10b981] px-12 py-6 rounded-[2rem] font-black text-xl hover:scale-105 transition-all shadow-2xl"
