@@ -1,16 +1,113 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, User, Phone, MessageSquare, CheckCircle, HelpCircle, ChevronDown, ShieldCheck, Heart, UserPlus } from 'lucide-react';
+import { Calendar, Clock, User, Phone, MessageSquare, CheckCircle, HelpCircle, ChevronDown, ShieldCheck, Heart, UserPlus, AlertCircle } from 'lucide-react';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/custom";
 
 const Appointment = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  // Data from Backend
+  const [doctors, setDoctors] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  
+  // Selection State
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [formData, setFormData] = useState({
+    patientName: "",
+    patientAge: "",
+    patientPhone: "",
+    patientEmail: "",
+    problem: ""
+  });
+
+  // Fetch Doctors on mount
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/doctors`);
+        const data = await res.json();
+        setDoctors(data);
+      } catch (err) {
+        console.error("Failed to fetch doctors", err);
+      }
+    };
+    fetchDoctors();
+  }, []);
+
+  const fetchSlots = async () => {
+    if (!selectedDoctor) return;
+    setLoading(true);
+    try {
+      const now = new Date();
+      const res = await fetch(`${API_BASE}/available-slots?doctorId=${selectedDoctor}&month=${now.getMonth() + 1}&year=${now.getFullYear()}`);
+      const data = await res.json();
+      
+      const uniqueSlots = data.reduce((acc, current) => {
+        const key = `${new Date(current.date).toDateString()}-${current.startTime}`;
+        if (!acc.find(item => `${new Date(item.date).toDateString()}-${item.startTime}` === key)) {
+          acc.push(current);
+        }
+        return acc;
+      }, []);
+
+      setAvailableSlots(uniqueSlots);
+    } catch (err) {
+      console.error("Failed to fetch slots", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch Slots when doctor is selected
+  useEffect(() => {
+    fetchSlots();
+  }, [selectedDoctor]);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    if (!selectedSlot) {
+      setError("Please select a time slot");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch(`${API_BASE}/book-appointment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          doctorId: selectedDoctor,
+          slotId: selectedSlot.id
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setFormSubmitted(true);
+        fetchSlots(); // Refresh slots immediately
+      } else {
+        setError(data.error || "Booking failed. Please try again.");
+      }
+    } catch (err) {
+      setError("Server connection error. Please ensure the backend is running.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const faqs = [
@@ -47,14 +144,14 @@ const Appointment = () => {
       </section>
 
       <section className="section-padding bg-[#f8fafc]">
-        <div className="container-max">
+        <div className="container-max px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
             {/* Appointment Form */}
             <motion.div 
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-10 md:p-16 rounded-[4rem] shadow-3xl border border-slate-100 relative overflow-hidden"
+              className="bg-white p-6 md:p-16 rounded-[3rem] md:rounded-[4rem] shadow-3xl border border-slate-100 relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-[4rem] -z-0"></div>
               
@@ -69,15 +166,20 @@ const Appointment = () => {
                     <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-[2rem] flex items-center justify-center mx-auto mb-10 shadow-xl shadow-emerald-100">
                       <CheckCircle size={48} />
                     </div>
-                    <h2 className="text-4xl font-black mb-6 text-slate-900 tracking-tight">Booking Sent!</h2>
+                    <h2 className="text-4xl font-black mb-6 text-slate-900 tracking-tight">Booking Confirmed!</h2>
                     <p className="text-slate-500 mb-12 text-xl font-medium leading-relaxed">
-                      Thank you. Our patient care executive will contact you within 30 minutes to confirm your neurology consultation.
+                      Thank you. Your appointment has been successfully booked. <strong>A confirmation has been sent to your email.</strong>
                     </p>
+                    
                     <button 
-                      onClick={() => setFormSubmitted(false)}
+                      onClick={() => {
+                        setFormSubmitted(false);
+                        setSelectedSlot(null);
+                        setFormData({ patientName: "", patientAge: "", patientPhone: "", patientEmail: "", problem: "" });
+                      }}
                       className="btn-primary"
                     >
-                      New Appointment
+                      Book Another Appointment
                     </button>
                   </motion.div>
                 ) : (
@@ -86,6 +188,64 @@ const Appointment = () => {
                     onSubmit={handleSubmit} 
                     className="space-y-8 relative z-10"
                   >
+                    {error && (
+                      <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center gap-3 font-bold border border-red-100">
+                        <AlertCircle size={20} />
+                        {error}
+                      </div>
+                    )}
+
+                    {/* Doctor Selection */}
+                    <div className="group">
+                      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Select Doctor</label>
+                      <div className="relative">
+                        <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={20} />
+                        <select 
+                          required
+                          className="w-full pl-14 pr-6 py-5 rounded-2xl bg-slate-50 border-none appearance-none focus:bg-white focus:ring-4 focus:ring-blue-100 outline-none transition-all font-bold text-slate-900"
+                          value={selectedDoctor}
+                          onChange={(e) => setSelectedDoctor(e.target.value)}
+                        >
+                          <option value="">Choose a Specialist</option>
+                          {doctors.map(doc => (
+                            <option key={doc.id} value={doc.id}>{doc.name} - {doc.specialization}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={20} />
+                      </div>
+                    </div>
+
+                    {/* Slot Selection */}
+                    {selectedDoctor && (
+                      <div className="space-y-4">
+                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Available Slots</label>
+                        {loading ? (
+                          <p className="text-slate-400 font-bold italic">Loading slots...</p>
+                        ) : availableSlots.length > 0 ? (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            {availableSlots.map(slot => (
+                              <button
+                                type="button"
+                                key={slot.id}
+                                onClick={() => setSelectedSlot(slot)}
+                                className={`p-4 rounded-xl font-bold text-sm transition-all border-2 ${
+                                  selectedSlot?.id === slot.id 
+                                  ? 'bg-blue-600 border-blue-600 text-white shadow-lg' 
+                                  : 'bg-slate-50 border-slate-50 text-slate-600 hover:border-blue-200'
+                                }`}
+                              >
+                                {new Date(slot.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
+                                <br />
+                                {slot.startTime}
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-red-400 font-bold italic">No slots available for the current month.</p>
+                        )}
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="group">
                         <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Patient Name</label>
@@ -93,7 +253,10 @@ const Appointment = () => {
                           <User className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={20} />
                           <input 
                             type="text" 
+                            name="patientName"
                             required
+                            value={formData.patientName}
+                            onChange={handleInputChange}
                             className="w-full pl-14 pr-6 py-5 rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-4 focus:ring-blue-100 outline-none transition-all font-bold text-slate-900"
                             placeholder="Full Name"
                           />
@@ -105,7 +268,10 @@ const Appointment = () => {
                           <UserPlus className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={20} />
                           <input 
                             type="number" 
+                            name="patientAge"
                             required
+                            value={formData.patientAge}
+                            onChange={handleInputChange}
                             className="w-full pl-14 pr-6 py-5 rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-4 focus:ring-blue-100 outline-none transition-all font-bold text-slate-900"
                             placeholder="Patient Age"
                           />
@@ -120,20 +286,26 @@ const Appointment = () => {
                           <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={20} />
                           <input 
                             type="tel" 
+                            name="patientPhone"
                             required
+                            value={formData.patientPhone}
+                            onChange={handleInputChange}
                             className="w-full pl-14 pr-6 py-5 rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-4 focus:ring-blue-100 outline-none transition-all font-bold text-slate-900"
                             placeholder="+91 XXXXX XXXXX"
                           />
                         </div>
                       </div>
                       <div className="group">
-                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Preferred Date</label>
+                        <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Email (Optional)</label>
                         <div className="relative">
-                          <Calendar className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={20} />
+                          <HelpCircle className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={20} />
                           <input 
-                            type="date" 
-                            required
+                            type="email" 
+                            name="patientEmail"
+                            value={formData.patientEmail}
+                            onChange={handleInputChange}
                             className="w-full pl-14 pr-6 py-5 rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-4 focus:ring-blue-100 outline-none transition-all font-bold text-slate-900"
+                            placeholder="your@email.com"
                           />
                         </div>
                       </div>
@@ -145,14 +317,22 @@ const Appointment = () => {
                         <MessageSquare className="absolute left-5 top-6 text-slate-300 group-focus-within:text-blue-500 transition-colors" size={20} />
                         <textarea 
                           rows="4" 
+                          name="problem"
+                          value={formData.problem}
+                          onChange={handleInputChange}
                           className="w-full pl-14 pr-6 py-5 rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-4 focus:ring-blue-100 outline-none transition-all font-bold text-slate-900"
                           placeholder="Describe your neurological concerns..."
                         ></textarea>
                       </div>
                     </div>
 
-                    <button type="submit" className="w-full btn-primary py-6 text-xl shadow-2xl">
-                      Submit Appointment Request <ChevronDown className="ml-2 -rotate-90" size={20} />
+                    <button 
+                      type="submit" 
+                      disabled={loading}
+                      className={`w-full btn-primary py-6 text-xl shadow-2xl flex items-center justify-center gap-3 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {loading ? 'Processing...' : 'Confirm Appointment'}
+                      {!loading && <ChevronDown className="ml-2 -rotate-90" size={20} />}
                     </button>
                     
                     <p className="text-center text-slate-400 font-bold text-sm mt-6">

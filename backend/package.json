@@ -1,0 +1,26 @@
+{
+  "name": "asha-neurology-backend",
+  "version": "1.0.0",
+  "description": "Payload CMS Backend for Asha Neurology Center",
+  "main": "server.js",
+  "scripts": {
+    "dev": "cross-env PAYLOAD_CONFIG_PATH=payload.config.js nodemon server.js",
+    "build": "cross-env PAYLOAD_CONFIG_PATH=payload.config.js payload build",
+    "start": "cross-env PAYLOAD_CONFIG_PATH=payload.config.js node server.js"
+  },
+  "dependencies": {
+    "@payloadcms/bundler-webpack": "^1.0.7",
+    "@payloadcms/db-mongodb": "^1.7.5",
+    "@payloadcms/richtext-slate": "^1.5.2",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.7",
+    "payload": "^2.30.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
